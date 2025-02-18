@@ -7,8 +7,10 @@ services:
     networks:
       - result-tier
       - back-tier
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
     volumes:
       - ./db-data:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
@@ -16,8 +18,8 @@ services:
   redis:
     image: redis:7
     restart: always
-    env_file:
-      - .env
+    environment:
+      - REDIS_HOST=redis
     ports:
       - '6379:6379'
     networks:
@@ -29,8 +31,8 @@ services:
     depends_on:
       redis:
         condition: service_started
-    env_file:
-      - .env
+    environment:
+      - REDIS_HOST=redis
     networks:
       - poll-tier
     ports:
@@ -41,18 +43,27 @@ services:
     depends_on:
       redis:
         condition: service_started
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - REDIS_HOST=redis
     networks:
       - back-tier
 
   result:
     build: result
-    env_file:
-      - .env
     depends_on:
       db:
         condition: service_started
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
     networks:
       - result-tier
     ports:
