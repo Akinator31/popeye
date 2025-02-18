@@ -2,7 +2,8 @@ FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 COPY . /app/
-RUN mvn dependency:resolve -f pom.xml && mvn package
+RUN mvn dependency:resolve
+RUN mvn package
 
 FROM eclipse-temurin:21-jre-alpine
 

@@ -75,4 +75,4 @@ networks:
   back-tier:
 
 volumes:
-  db_data:
+  db-data:
