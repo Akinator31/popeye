@@ -13,7 +13,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
   redis:
@@ -45,6 +45,8 @@ services:
     restart: always
     depends_on:
       redis:
+        condition: service_started
+      db:
         condition: service_started
     environment:
       - POSTGRES_HOST=db
